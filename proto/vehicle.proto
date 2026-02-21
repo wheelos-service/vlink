@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package vlink;
+option go_package = "github.com/daohu527/vlink/pkg/protocol";
+
+// VehicleState is published by the vehicle to v1/vehicle/{id}/state at 10-50 Hz.
+message VehicleState {
+  string vehicle_id  = 1;
+  int64  timestamp   = 2; // Unix milliseconds
+  double latitude    = 3;
+  double longitude   = 4;
+  double altitude    = 5;
+  float  speed       = 6; // m/s
+  float  heading     = 7; // degrees, 0-360
+  Gear   gear        = 8;
+  float  battery_pct = 9; // 0-100
+  string mode        = 10; // autonomous / manual / teleoperation
+  bool   emergency   = 11;
+}
+
+enum Gear {
+  GEAR_UNKNOWN = 0;
+  GEAR_PARK    = 1;
+  GEAR_DRIVE   = 2;
+  GEAR_REVERSE = 3;
+  GEAR_NEUTRAL = 4;
+}
+
+// ControlCommand is published by the control center to v1/vehicle/{id}/control.
+message ControlCommand {
+  string command_id  = 1;
+  string vehicle_id  = 2;
+  int64  timestamp   = 3; // Unix milliseconds
+  string action      = 4; // e.g. "stop", "resume", "teleoperation_start"
+  float  target_speed = 5;
+  float  target_heading = 6;
+  string payload     = 7; // JSON-encoded extra parameters
+}
+
+// TeleoperationAlert is sent by the vehicle when it needs human intervention.
+message TeleoperationAlert {
+  string vehicle_id = 1;
+  int64  timestamp  = 2;
+  string reason     = 3; // e.g. "extreme_weather", "unmarked_construction"
+  double latitude   = 4;
+  double longitude  = 5;
+  int32  severity   = 6; // 1 (low) – 3 (critical)
+}
