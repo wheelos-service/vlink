@@ -72,7 +72,7 @@ func (c *mockClient) OptionsReader() mqtt.ClientOptionsReader     {
 
 // ---
 
-func TestServerUpdatesShaddowOnStateMessage(t *testing.T) {
+func TestServerUpdatesShadowOnStateMessage(t *testing.T) {
 	srv := New(Config{ClientID: "cc"})
 	mc := newMockClient()
 	srv.ConnectWithClient(mc)
